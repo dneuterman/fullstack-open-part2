@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import phonebookService from './services/phonebook'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -11,10 +11,11 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('');
 
   const fetchPersons = () => {
-    axios.get('http://localhost:3001/persons')
-          .then(response => {
-            setPersons(response.data)
-          })
+    phonebookService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
   }
 
   useEffect(fetchPersons, [])
@@ -29,15 +30,18 @@ const App = () => {
       alert("Please enter a phone number");
       return
     }
-      const nameObject = {
+      const personObject = {
         name: newName,
-        number: newPhoneNumber,
-        id: persons.length + 1
+        number: newPhoneNumber
       }
   
-      setPersons(persons.concat(nameObject));
-      setNewName('');
-      setNewPhoneNumber('');
+      phonebookService
+        .addPerson(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName('');
+          setNewPhoneNumber('');
+        })
   }
 
   // simple callback function to handle all the set useState functions
