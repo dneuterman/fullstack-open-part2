@@ -49,6 +49,18 @@ const App = () => {
     callback(event.target.value);
   }
 
+  const handleDelete = person => {
+    if (window.confirm(`Delete ${person.name} from the phonebook?`)) {
+      phonebookService
+        .deletePerson(person.id)
+        .then(returnedPerson => {
+          console.log(`${returnedPerson.name} has been deleted`)
+          const newPhonebook = persons.filter(person => person.id !== returnedPerson.id)
+          setPersons(newPhonebook)
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -63,7 +75,7 @@ const App = () => {
       />
       <h3>Numbers</h3>
       <ul>
-        <Persons persons={persons} nameFilter={nameFilter}/>
+        <Persons persons={persons} nameFilter={nameFilter} handleDelete={handleDelete}/>
       </ul>
     </div>
   )
