@@ -27,7 +27,7 @@ const App = () => {
       if (newPhoneNumber === '') {
         alert(`Please enter a phone number if you would like to update the phone number of ${foundPerson.name}`);
       } else {
-        if (window.confirm(`Would you like to update the phone nnumber of ${foundPerson.name}?`)) {
+        if (window.confirm(`Would you like to update the phone number of ${foundPerson.name}?`)) {
           const changedPerson = { ...foundPerson, number: newPhoneNumber}
           phonebookService.updatePerson(changedPerson).then(returnedPerson => {
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
