@@ -22,14 +22,25 @@ const App = () => {
 
   const updatePhonebook = (event) => {
     event.preventDefault();
-    if (persons.find(person => person.name.toLowerCase() === newName.toLowerCase())) {
-      alert(`${newName} is already in the phonebook.`);
-      return
-    }
-    if (newPhoneNumber === '') {
-      alert("Please enter a phone number");
-      return
-    }
+    const foundPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    if (foundPerson) {
+      if (newPhoneNumber === '') {
+        alert(`Please enter a phone number if you would like to update the phone number of ${foundPerson.name}`);
+      } else {
+        if (window.confirm(`Would you like to update the phone nnumber of ${foundPerson.name}?`)) {
+          const changedPerson = { ...foundPerson, number: newPhoneNumber}
+          phonebookService.updatePerson(changedPerson).then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+            setNewName('')
+            setNewPhoneNumber('')
+          })
+        }
+      }
+    } else {
+      if (newPhoneNumber === '') {
+        alert('Please enter a phone number to add new person to the phonebook')
+        return
+      }
       const personObject = {
         name: newName,
         number: newPhoneNumber
@@ -42,6 +53,7 @@ const App = () => {
           setNewName('');
           setNewPhoneNumber('');
         })
+    }
   }
 
   // simple callback function to handle all the set useState functions
