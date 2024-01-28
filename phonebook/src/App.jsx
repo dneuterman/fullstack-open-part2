@@ -3,12 +3,17 @@ import phonebookService from './services/phonebook'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState({
+    message: null,
+    messageType: 'success'
+  });
 
   const fetchPersons = () => {
     phonebookService
@@ -19,6 +24,13 @@ const App = () => {
   }
 
   useEffect(fetchPersons, [])
+
+  const generateMessage = (message, messageType) => {
+    setNotificationMessage({...notificationMessage, message: message, messageType: messageType})
+    setTimeout(() => {
+      setNotificationMessage({...notificationMessage, message: null})
+    }, 5000)
+  }
 
   const updatePhonebook = (event) => {
     event.preventDefault();
@@ -52,6 +64,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewPhoneNumber('');
+          generateMessage(`Added ${returnedPerson.name} to the Phonebook`, 'success');
         })
     }
   }
@@ -76,6 +89,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notificationMessage={notificationMessage} />
       <Filter filterValue={nameFilter} handleChange={(event) => handleInputChange(event, setNameFilter)} />
       <h3>Add New Number</h3>
       <PersonForm
