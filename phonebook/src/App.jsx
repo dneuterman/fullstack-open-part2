@@ -79,9 +79,13 @@ const App = () => {
       phonebookService
         .deletePerson(person.id)
         .then(returnedPerson => {
-          console.log(`${returnedPerson.name} has been deleted`)
           const newPhonebook = persons.filter(person => person.id !== returnedPerson.id)
           setPersons(newPhonebook)
+          generateMessage(`${returnedPerson.name} has been deleted`, 'success');
+        })
+        .catch(error => {
+          generateMessage(`${person.name} has already been removed from the server`, 'error');
+          setPersons(persons.filter(n => n.id != person.id));
         })
     }
   }
